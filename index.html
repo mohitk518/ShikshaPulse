@@ -1,38 +1,68 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>ShikshaPulse MVP</title>
 <style>
-:root{--bg:#f5f7f7;--card:#fff;--ink:#17252b;--muted:#5f6d72;--line:#e1e7e8;--brand:#0f766e;--red:#dc2626;--amb:#d97706;--grn:#16a34a;--soft:#eef6f5}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e1719;--card:#152225;--ink:#e6eef0;--muted:#97a6aa;--line:#23353a;--soft:#183034}}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.5 system-ui,"Segoe UI",Roboto,sans-serif}
+:root{--bg:#f5f7f7;--card:#fff;--ink:#17252b;--muted:#5f6d72;--line:#e1e7e8;--brand:#0f766e;--red:#dc2626;--amb:#d97706;--grn:#16a34a;--soft:#eef6f5;--errbg:#fef2f2;--errink:#7f1d1d;--errline:#fecaca}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e1719;--card:#152225;--ink:#e6eef0;--muted:#97a6aa;--line:#23353a;--soft:#183034;--errbg:#3a1717;--errink:#fecaca;--errline:#7f1d1d}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.5 system-ui,"Segoe UI",Roboto,"Noto Sans Devanagari","Nirmala UI",Mangal,"Kohinoor Devanagari",sans-serif}
+:lang(hi){font-family:"Noto Sans Devanagari","Nirmala UI",Mangal,"Kohinoor Devanagari","Lohit Devanagari",system-ui,sans-serif;line-height:1.75}
 header{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 20px;background:var(--card);border-bottom:1px solid var(--line);flex-wrap:wrap}
 .logo{font-weight:700;font-size:17px;color:var(--brand)}.logo small{color:var(--muted);font-weight:400;font-size:12px;margin-left:6px}
+.hdr-r{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
 select,button,input{font:inherit;padding:6px 10px;border:1px solid var(--line);border-radius:6px;background:var(--card);color:var(--ink)}
 button{cursor:pointer}button.p{background:var(--brand);color:#fff;border-color:var(--brand)}
+button:focus-visible,select:focus-visible,input:focus-visible,.upl:focus-visible,tr.row:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+.upl{background:var(--brand);color:#fff;padding:6px 12px;border-radius:6px;cursor:pointer;border:1px solid var(--brand);display:inline-flex;align-items:center;justify-content:center}
+.tabs{display:inline-flex;border:1px solid var(--line);border-radius:6px;overflow:hidden}.tabs button{border:0;border-radius:0}.tabs button[aria-selected="true"]{background:var(--soft);color:var(--brand);font-weight:600;box-shadow:inset 0 -2px 0 var(--brand)}
 .wrap{max-width:1180px;margin:0 auto;padding:16px}
 .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:14px}
-@media(max-width:760px){.stats{grid-template-columns:repeat(2,1fr)}.grid{grid-template-columns:1fr!important}}
 .stat{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:10px 14px}.stat b{font-size:24px;display:block}.stat span{color:var(--muted);font-size:12.5px}
-.grid{display:grid;grid-template-columns:1.1fr 1fr;gap:14px}.card{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:14px;overflow-x:auto}
+.grid{display:grid;grid-template-columns:1.1fr 1fr;gap:14px}.card{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:14px;overflow-x:auto;min-width:0}
 h3{margin:0 0 10px;font-size:14.5px}table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;padding:7px 6px;border-bottom:1px solid var(--line)}th{color:var(--muted);font-size:12px}
 tr.row{cursor:pointer}tr.row:hover,tr.sel{background:var(--soft)}
-.pill{display:inline-block;padding:1px 8px;border-radius:10px;font-size:12px;font-weight:600;color:#fff}.r{background:var(--red)}.a{background:var(--amb)}.g{background:var(--grn)}
+.pill{display:inline-block;padding:1px 8px;border-radius:10px;font-size:12px;font-weight:600;color:#fff;white-space:nowrap}.r{background:var(--red)}.a{background:var(--amb)}.g{background:var(--grn)}
 .bar{height:6px;background:var(--line);border-radius:3px;overflow:hidden;width:60px;display:inline-block;vertical-align:middle;margin-right:6px}.bar i{display:block;height:100%}
 .reason{padding:6px 0;border-bottom:1px solid var(--line)}.topics span{display:inline-block;background:var(--soft);border:1px solid var(--line);border-radius:5px;padding:2px 8px;font-size:12.5px}
-.msg{background:#dcf8c6;color:#111;border-radius:8px;padding:10px;font-size:13px;white-space:pre-wrap}
+.msg{background:#dcf8c6;color:#111;border-radius:8px;padding:10px;font-size:13px;white-space:pre-wrap}.msg:lang(hi){font-size:14px}
 ol{margin:4px 0;padding-left:18px}.muted{color:var(--muted);font-size:12.5px}svg text{fill:var(--muted);font-size:10px}
 .bx{max-width:340px;margin:12vh auto;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:22px}.bx input{width:100%;margin:6px 0 12px}
 .tools{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
+.err{background:var(--errbg);color:var(--errink);border:1px solid var(--errline);border-radius:8px;padding:10px 12px;margin-bottom:12px}.err ul{margin:4px 0;padding-left:18px}.err .muted{color:inherit;opacity:.85}
+.cf{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(70px,1fr) 40px;gap:8px;align-items:center;padding:5px 0;border-bottom:1px solid var(--line);font-size:12.5px}
+.ctrack{position:relative;height:10px;background:var(--soft);border-radius:5px}.ctrack:after{content:"";position:absolute;left:50%;top:-3px;bottom:-3px;width:1px;background:var(--muted)}
+.ctrack i{position:absolute;top:0;bottom:0;border-radius:5px}.ctrack i.up{left:50%;background:var(--red)}.ctrack i.dn{right:50%;background:var(--grn)}
+.cv{text-align:right;font-variant-numeric:tabular-nums;font-weight:600}.cv.up{color:var(--red)}.cv.dn{color:var(--grn)}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:6px;overflow:hidden;vertical-align:middle}.seg button{border:0;border-radius:0;padding:4px 10px}.seg button[aria-pressed="true"]{background:var(--brand);color:#fff}
+.dhead{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;flex-wrap:wrap}.phead{display:none}
+.pchart svg{width:100%;height:auto;max-width:560px}.pchart svg text{font-size:12px}.pchart svg text.lb{fill:var(--ink);font-weight:600}
+@media(max-width:760px){header{padding:10px 12px}.wrap{padding:10px}.stats{grid-template-columns:repeat(2,1fr);gap:8px}.stat b{font-size:20px}.grid{grid-template-columns:1fr!important}
+ select,button,input,.upl{min-height:40px;font-size:16px}.tools>*{flex:1 1 auto}.tools .muted{flex-basis:100%}.hdr-r{width:100%}.tabs{flex:1 1 100%}.tabs button{flex:1}.hide-sm{display:none}.seg button{min-height:36px}
+ .cf{grid-template-columns:minmax(0,1fr) 80px 36px}.logo small{display:block;margin-left:0}}
+@media print{:root,:root:not([data-theme="light"]){--bg:#fff;--card:#fff;--ink:#000;--muted:#444;--line:#ccc;--soft:#f2f2f2}
+ *{-webkit-print-color-adjust:exact;print-color-adjust:exact}@page{margin:14mm}
+ header,.tools,#fileErr,#viewC>.stats,#listCard,#viewP,.noprint,#login{display:none!important}
+ .wrap{padding:0;max-width:none}.grid{display:block}#det{border:0;padding:0;overflow:visible}.phead{display:block;font-size:12px;color:#444;border-bottom:1px solid #ccc;padding-bottom:6px;margin-bottom:10px}
+ .reason,.cf,li{break-inside:avoid}}
 </style></head><body>
 <div id="login"><div class="bx"><div class="logo">ShikshaPulse</div><p class="muted">Teacher login (demo)</p>
 <input id="u" value="teacher@demo-school.in" aria-label="Email"><input id="pw" type="password" value="demo123" aria-label="Password">
-<button class="p" id="go" style="width:100%">Login</button><p class="muted" id="err"></p></div></div>
+<button class="p" id="go" style="width:100%">Login</button><p class="muted" id="err" role="alert"></p></div></div>
 <div id="app" hidden>
-<header><div class="logo">ShikshaPulse<small>MVP v1.0 · Demo School ERP import</small></div><div><select id="cls"></select> <select id="wk"></select> <button id="out">Logout</button></div></header>
+<header><div class="logo">ShikshaPulse<small>MVP v1.1 · Demo School ERP import</small></div>
+<div class="hdr-r"><div class="tabs" role="tablist" aria-label="View"><button role="tab" id="tabC" aria-selected="true" aria-controls="viewC">Class dashboard</button><button role="tab" id="tabP" aria-selected="false" aria-controls="viewP">Principal view</button></div>
+<span id="selw"><select id="cls" aria-label="Class"></select> <select id="wk" aria-label="Week"></select></span> <button id="out">Logout</button></div></header>
 <div class="wrap">
-<div class="tools"><label class="p" style="background:var(--brand);color:#fff;padding:6px 12px;border-radius:6px;cursor:pointer">Upload ERP Excel/CSV<input id="f" type="file" accept=".csv" hidden></label>
-<button id="dl">Download sample CSV</button><span class="muted" id="src"></span></div>
+<div class="tools"><label class="upl" tabindex="0" id="uplbl">Upload ERP Excel/CSV<input id="f" type="file" accept=".csv,.xlsx,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" hidden></label>
+<button id="dl">Download sample CSV</button><button id="dlRisk">Download at-risk list (CSV)</button><span class="muted" id="src" role="status"></span></div>
+<div id="fileErr" class="err" role="alert" hidden></div>
+<section id="viewC" role="tabpanel" aria-labelledby="tabC">
 <div class="stats"><div class="stat"><b id="sTot">0</b><span>Students</span></div><div class="stat"><b id="sRed" style="color:var(--red)">0</b><span>High risk this week</span></div><div class="stat"><b id="sAmb" style="color:var(--amb)">0</b><span>Watch list</span></div><div class="stat"><b id="sAtt">0%</b><span>Class attendance (last 4 weeks)</span></div></div>
-<div class="grid"><div class="card"><h3>Students sorted by risk</h3><table><thead><tr><th>Roll</th><th>Name</th><th>Attendance</th><th>Marks</th><th>Risk</th></tr></thead><tbody id="tb"></tbody></table></div><div class="card" id="det"></div></div>
-<p class="muted">Model: logistic regression trained on 6,000 synthetic students (AUC 0.747, top-10% list catches 28% of at-risk students). Real accuracy will be measured on anonymised school data in the pilot. CSV columns: student_id, name, class, week, attendance_pct, test_marks, homework_pct, fee_pending_days, weak_topic (optional). Data is processed in your browser and not uploaded anywhere.</p>
+<div class="grid"><div class="card" id="listCard"><h3>Students sorted by risk</h3><table><thead><tr><th class="hide-sm">Roll</th><th>Name</th><th>Attendance</th><th>Marks</th><th>Risk</th></tr></thead><tbody id="tb"></tbody></table></div><div class="card" id="det"></div></div>
+</section>
+<section id="viewP" role="tabpanel" aria-labelledby="tabP" hidden>
+<div class="stats"><div class="stat"><b id="pCls">0</b><span>Classes</span></div><div class="stat"><b id="pTot">0</b><span>Students</span></div><div class="stat"><b id="pRed" style="color:var(--red)">0</b><span>High risk this week</span></div><div class="stat"><b id="pAtt">0%</b><span>School attendance (all students)</span></div></div>
+<div class="grid"><div class="card"><h3>Per-class summary</h3><table><thead><tr><th>Class</th><th>Students</th><th>High risk</th><th>Watch</th><th>Avg attendance</th></tr></thead><tbody id="ptb"></tbody></table><p class="muted">Tap a class to open its dashboard.</p></div>
+<div class="card"><h3>High-risk students per class</h3><div class="pchart" id="pchart"></div><p class="muted">Red = high-risk students; grey = all students in the class.</p></div></div>
+</section>
+<p class="muted" id="note">Model: logistic regression trained on 6,000 synthetic students (AUC 0.747, top-10% list catches 28% of at-risk students). Real accuracy will be measured on anonymised school data in the pilot. CSV columns: student_id, name, class, week, attendance_pct, test_marks, homework_pct, fee_pending_days, weak_topic (optional). Excel (.xlsx): same columns on the first sheet; the Excel reader (SheetJS) is downloaded from cdnjs only when you pick an .xlsx file. Data is processed in your browser and not uploaded anywhere.</p>
 </div></div>
 <script>
 const M={"names": ["att", "adrop", "marks", "mdrop", "hw", "fee"], "mu": [0.8154059807303586, 0.050386523728978894, 62.22606151995279, 2.227992483970034, 0.6933263423700133, 8.090166666666667], "sd": [0.11326625942856718, 0.04975124784277838, 16.749532224362518, 6.979571376164204, 0.20524167022515222, 20.691263131386002], "coef": [-0.4883307917443954, 0.4097586318991022, -0.51023792291784, 0.38650691718945485, -0.376591763738117, 0.18423788222076412], "b": -2.6414239647754747};const SAMPLE=`student_id,name,class,week,attendance_pct,test_marks,homework_pct,fee_pending_days,weak_topic
@@ -156,34 +186,109 @@ S030,Sakshi Mishra,8-A,11,66,74,99,0,Science: Sound
 S030,Sakshi Mishra,8-A,12,66,80,68,0,Science: Sound
 S030,Sakshi Mishra,8-A,13,66,76,81,0,Science: Force & pressure
 S030,Sakshi Mishra,8-A,14,66,78,80,0,Maths: Linear equations`;
-const $=id=>document.getElementById(id);let S=[],ALL=[];
-$('go').onclick=()=>{if($('u').value.trim()&&$('pw').value==='demo123'){$('login').hidden=true;$('app').hidden=false;load(SAMPLE,'Sample data (30 students)')}else $('err').textContent='Wrong password (demo: demo123)'};
+const $=id=>document.getElementById(id);let S=[],ALL=[],CUR=0,LANG='hi',VIEW='C',SRCTXT='';
+const esc=v=>String(v==null?'':v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const NEED=['student_id','name','week','attendance_pct','test_marks','homework_pct'],OPT=['class','fee_pending_days','weak_topic'];
+const XLSX_SRC='https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js',XLSX_SRI='sha512-r22gChDnGvBylk90+2e/ycr3RVrDi8DIOkIGNhJlKfuyQM4tIRAI062MaV8sfjQKYVGjOBaZBOA87z+IhZE9DA==';
+function login(){if($('u').value.trim()&&$('pw').value==='demo123'){$('err').textContent='';$('login').hidden=true;$('app').hidden=false;loadRows(parseCSV(SAMPLE),'Sample data (30 students)')}else $('err').textContent='Wrong password (demo: demo123)'}
+$('go').onclick=login;['u','pw'].forEach(k=>$(k).onkeydown=e=>{if(e.key==='Enter')login()});
 $('out').onclick=()=>{$('app').hidden=true;$('login').hidden=false};
-$('dl').onclick=()=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([SAMPLE],{type:'text/csv'}));a.download='sample_students.csv';a.click()};
-$('f').onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{load(r.result,f.name)}catch(x){alert('Could not read file: '+x.message)}};r.readAsText(f)};
-function parse(t){const L=t.replace(/^\uFEFF/,'').trim().split(/\r?\n/);const h=L[0].split(',').map(x=>x.trim().toLowerCase());return L.slice(1).filter(x=>x.trim()).map(l=>{const c=l.split(',');const o={};h.forEach((k,i)=>o[k]=(c[i]||'').trim());return o})}
+function save(text,fname){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([text],{type:'text/csv;charset=utf-8'}));a.download=fname;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),2000)}
+$('dl').onclick=()=>save(SAMPLE,'sample_students.csv');
+$('uplbl').onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();$('f').click()}};
+// ---------- file reading ----------
+let xlsxP=null;
+function getXLSX(){if(window.XLSX)return Promise.resolve(window.XLSX);if(!xlsxP)xlsxP=new Promise((ok,no)=>{const s=document.createElement('script');s.src=XLSX_SRC;s.integrity=XLSX_SRI;s.crossOrigin='anonymous';s.referrerPolicy='no-referrer';
+ s.onload=()=>window.XLSX?ok(window.XLSX):no(new Error('The Excel reader did not start.'));s.onerror=()=>{xlsxP=null;s.remove();no(new Error('Could not download the Excel reader (check the internet connection). You can also save the sheet as CSV and upload that.'))};document.head.appendChild(s)});return xlsxP}
+$('f').onchange=async e=>{const f=e.target.files[0];e.target.value='';if(!f)return;const ext=(f.name.includes('.')?f.name.split('.').pop():'').toLowerCase();
+ if(f.size>10*1024*1024)return showErr(f.name,['The file is larger than 10 MB. Export only the classes and weeks you need.']);
+ if(ext==='csv'){let t;try{t=await f.text()}catch(x){return showErr(f.name,['The file could not be read.'])}return loadRows(parseCSV(t),f.name)}
+ if(ext==='xlsx'){$('src').textContent='Reading Excel file…';let X;try{X=await getXLSX()}catch(x){return showErr(f.name,[x.message])}
+  let rows;try{const wb=X.read(await f.arrayBuffer(),{type:'array'});const ws=wb.Sheets[wb.SheetNames[0]];rows=X.utils.sheet_to_json(ws,{header:1,raw:false,defval:'',blankrows:false})}catch(x){return showErr(f.name,['This Excel file could not be opened ('+x.message+'). Save it again as .xlsx, or as CSV, and upload that.'])}
+  return loadRows(rows,f.name)}
+ showErr(f.name,['Unsupported file type'+(ext?' ".'+ext+'"':'')+'. Upload a .csv file or an Excel .xlsx file.'])};
+function parseCSV(t){t=String(t).replace(/^﻿/,'');const rows=[];let row=[],f='',q=false;
+ for(let i=0;i<t.length;i++){const ch=t[i];
+  if(q){if(ch==='"'){if(t[i+1]==='"'){f+='"';i++}else q=false}else f+=ch}
+  else if(ch==='"'&&!f.trim())q=true,f='';
+  else if(ch===','){row.push(f);f=''}
+  else if(ch==='\n'||ch==='\r'){if(ch==='\r'&&t[i+1]==='\n')i++;row.push(f);rows.push(row);row=[];f=''}
+  else f+=ch}
+ if(f!==''||row.length){row.push(f);rows.push(row)}return rows}
+const num=v=>{const s=String(v==null?'':v).trim().replace(/%$/,'').trim();return s===''?NaN:Number(s)};
+function toRecords(rows){const blank=r=>!r||r.every(c=>String(c==null?'':c).trim()==='');rows=rows.filter(r=>!blank(r));if(!rows.length)return{err:['The file is empty.']};
+ const h=rows[0].map(x=>String(x==null?'':x).trim().toLowerCase().replace(/\s+/g,'_'));
+ const miss=NEED.filter(k=>!h.includes(k));
+ if(miss.length){const e=['Missing required column'+(miss.length>1?'s':'')+': '+miss.join(', ')+'.','Columns found in the file: '+(h.filter(Boolean).join(', ')||'(none)')+'.'];
+  if(h.length===1&&/[;\t]/.test(h[0]))e.push('The file seems to use ";" or tabs between values. Save it as "CSV (Comma delimited)" and upload again.');return{err:e}}
+ const recs=rows.slice(1).map(c=>{const o={};h.forEach((k,i)=>{if(k)o[k]=String(c[i]==null?'':c[i]).trim()});return o});
+ if(!recs.length)return{err:['The file has column headings but no student rows.']};
+ const bad=[];let nb=0;const add=m=>{nb++;if(bad.length<8)bad.push(m)};
+ recs.forEach((r,i)=>{const at='Row '+(i+2)+(r.student_id?' ('+r.student_id+')':'')+': ';
+  if(!r.student_id)add(at+'student_id is empty.');if(!r.name)add(at+'name is empty.');
+  if(!Number.isFinite(num(r.week)))add(at+'week is "'+r.week+'", expected a week number.');
+  ['attendance_pct','test_marks','homework_pct'].forEach(k=>{const v=num(r[k]);if(!(v>=0&&v<=100))add(at+k+' is "'+r[k]+'", expected a number from 0 to 100.')});
+  if('fee_pending_days' in r&&r.fee_pending_days!==''&&!(num(r.fee_pending_days)>=0))add(at+'fee_pending_days is "'+r.fee_pending_days+'", expected 0 or more days.')});
+ if(nb)return{err:[...bad,...(nb>bad.length?['…and '+(nb-bad.length)+' more problem(s). Fix these and upload again.']:[])]};
+ recs.forEach(r=>{['week','attendance_pct','test_marks','homework_pct'].forEach(k=>r[k]=num(r[k]));if('fee_pending_days' in r)r.fee_pending_days=num(r.fee_pending_days)||0});return{recs}}
+function showErr(name,errs){$('src').textContent=SRCTXT;const fe=$('fileErr');fe.innerHTML=`<b>Could not load “${esc(name)}”.</b> ${ALL.length?'The dashboard still shows the previous data.':''}<ul>${errs.map(x=>`<li>${esc(x)}</li>`).join('')}</ul><span class="muted">Required columns: ${NEED.join(', ')}. Optional: ${OPT.join(', ')}.</span>`;fe.hidden=false;fe.scrollIntoView({block:'nearest'})}
+function loadRows(rows,name){const res=toRecords(rows);if(res.err){showErr(name,res.err);return false}
+ ALL=res.recs;$('fileErr').hidden=true;const cl=classes();$('cls').innerHTML=cl.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join('');$('cls').onchange=()=>{build();setView(VIEW)};
+ SRCTXT='Loaded: '+name+' · '+ALL.length+' rows'+(cl.length>1?' · '+cl.length+' classes':'');$('src').textContent=SRCTXT;build();setView(VIEW);return true}
+const classes=()=>[...new Set(ALL.map(r=>r.class||'All'))];
+// ---------- model ----------
 const mean=a=>a.reduce((x,y)=>x+y,0)/a.length;
 function score(s){const a=s.att,m=s.marks;const f={att:mean(a)/100,adrop:Math.max(0,(mean(a.slice(0,Math.ceil(a.length/2)))-mean(a.slice(-2)))/100),marks:m[m.length-1],mdrop:m[0]-m[m.length-1],hw:mean(s.hw)/100,fee:s.fee};
  const c=M.names.map((n,i)=>M.coef[i]*(f[n]-M.mu[i])/M.sd[i]);const z=M.b+c.reduce((x,y)=>x+y,0);const p=1/(1+Math.exp(-z));
  const txt={att:()=>`Attendance ${Math.round(f.att*100)}% in recent weeks${f.att<.75?' (below 75%)':''}`,adrop:()=>`Attendance fell from ${Math.round(mean(s.att.slice(0,Math.ceil(s.att.length/2))))}% to ${Math.round(mean(s.att.slice(-2)))}% in the last 2 weeks`,marks:()=>`Latest test marks ${Math.round(f.marks)}%`,mdrop:()=>`Test marks dropped ${Math.round(f.mdrop)} points (${Math.round(m[0])} → ${Math.round(m[m.length-1])})`,hw:()=>`Only ${Math.round(f.hw*100)}% homework submitted`,fee:()=>`Fee pending for ${f.fee} days (possible family difficulty)`};
  const why=M.names.map((n,i)=>({n,v:c[i]})).filter(x=>x.v>0.15).sort((x,y)=>y.v-x.v).slice(0,3).map(x=>txt[x.n]());
- return{r:Math.min(99,Math.round(p*100)),why,a:f.att}}
+ return{r:Math.min(99,Math.round(p*100)),why,a:f.att,c,f}}
 const lvl=r=>r>=30?['r','High']:r>=15?['a','Watch']:['g','OK'];
-function load(t,name){ALL=parse(t);const need=['student_id','name','week','attendance_pct','test_marks','homework_pct'];const miss=need.filter(k=>!(k in ALL[0]));if(miss.length)throw new Error('missing columns: '+miss.join(', '));
- const cl=[...new Set(ALL.map(r=>r.class||'All'))];$('cls').innerHTML=cl.map(c=>`<option>${c}</option>`).join('');$('cls').onchange=build;$('src').textContent='Loaded: '+name+' · '+ALL.length+' rows';build()}
-function build(){const c=$('cls').value;const g={};ALL.filter(r=>(r.class||'All')===c).forEach(r=>{(g[r.student_id]=g[r.student_id]||[]).push(r)});
- S=Object.values(g).map(rs=>{rs.sort((a,b)=>+a.week-+b.week);const s={roll:rs[0].student_id,name:rs[0].name,att:rs.map(r=>+r.attendance_pct),marks:rs.map(r=>+r.test_marks),hw:rs.map(r=>+r.homework_pct),fee:+rs[rs.length-1].fee_pending_days||0,topic:rs[rs.length-1].weak_topic||'',wk:rs[rs.length-1].week};return Object.assign(s,score(s))}).sort((a,b)=>b.r-a.r);
- $('wk').innerHTML=`<option>Week ${S[0]?S[0].wk:''}</option>`;
+function scoreClass(c){const g={};ALL.filter(r=>(r.class||'All')===c).forEach(r=>{(g[r.student_id]=g[r.student_id]||[]).push(r)});
+ return Object.values(g).map(rs=>{rs.sort((a,b)=>+a.week-+b.week);const s={roll:rs[0].student_id,name:rs[0].name,cls:c,att:rs.map(r=>+r.attendance_pct),marks:rs.map(r=>+r.test_marks),hw:rs.map(r=>+r.homework_pct),fee:+rs[rs.length-1].fee_pending_days||0,topic:rs[rs.length-1].weak_topic||'',wk:rs[rs.length-1].week};return Object.assign(s,score(s))}).sort((a,b)=>b.r-a.r)}
+// ---------- class dashboard ----------
+function build(){const c=$('cls').value;S=scoreClass(c);
+ $('wk').innerHTML=`<option>Week ${esc(S[0]?S[0].wk:'')}</option>`;
  $('sTot').textContent=S.length;$('sRed').textContent=S.filter(s=>s.r>=30).length;$('sAmb').textContent=S.filter(s=>s.r>=15&&s.r<30).length;$('sAtt').textContent=Math.round(mean(S.map(s=>s.a))*100)+'%';
- $('tb').innerHTML=S.map((s,i)=>{const[k,l]=lvl(s.r);return `<tr class="row" data-i="${i}"><td>${s.roll}</td><td>${s.name}</td><td><span class="bar"><i style="width:${s.a*100}%;background:${s.a<.75?'var(--red)':'var(--grn)'}"></i></span>${Math.round(s.a*100)}%</td><td>${Math.round(s.marks[s.marks.length-1])}%</td><td><span class="pill ${k}">${l} · ${s.r}</span></td></tr>`}).join('');show(0)}
-function spark(v,label,col){const w=200,h=50,n=v.length;const x=i=>10+i*(w-20)/Math.max(1,n-1),y=q=>h-8-(q/100)*(h-18);return `<svg width="${w}" height="${h+12}"><polyline fill="none" stroke="${col}" stroke-width="2" points="${v.map((q,i)=>x(i)+','+y(q)).join(' ')}"/>${v.map((q,i)=>`<circle cx="${x(i)}" cy="${y(q)}" r="2.5" fill="${col}"/>`).join('')}<text x="0" y="${h+10}">${label}</text></svg>`}
-function show(i){const s=S[i];if(!s)return;document.querySelectorAll('tr.row').forEach(r=>r.classList.toggle('sel',+r.dataset.i===i));const[k,l]=lvl(s.r);const fn=s.name.split(' ')[0];const tp=s.topic,sub=tp.split(':')[0];const recent=Math.round(mean(s.att.slice(-2)));
- const plan=s.r>=30?[`Talk to ${fn} this week (5 min, friendly, ask about absence)`,tp?`Give the 15-min practice sheet on "${tp.split(':').pop().trim()}" (${sub})`:`Pair ${fn} with a study buddy for homework`,"Call parent if attendance doesn't improve by Friday","Re-check next week"]:s.r>=15?[tp?`Short revision of "${tp.split(':').pop().trim()}" in class`:'Encourage homework submission','Monitor for 2 weeks']:['No action needed. Keep encouraging.'];
- const msg=s.r>=15?`नमस्ते, मैं ${fn} की क्लास टीचर हूँ (कक्षा ${$('cls').value})।\n${fn} पिछले 2 हफ़्तों में ${recent}% दिन स्कूल आया/आई है${tp?` और ${sub} में "${tp.split(':').pop().trim()}" में थोड़ी मदद चाहिए`:''}।\nकृपया रोज़ स्कूल भेजें। कोई परेशानी हो तो बताइए, हम मदद करेंगे। 🙏`:'';
- $('det').innerHTML=`<h3>${s.name} <span class="pill ${k}">${l} risk · ${s.r}/100</span></h3><div style="display:flex;gap:14px;flex-wrap:wrap">${spark(s.att,'Attendance % (weekly)','#0f766e')}${spark(s.marks,'Test marks (weekly)','#d97706')}</div>
- <h3 style="margin-top:8px">Why flagged (top model reasons)</h3>${s.why.length?s.why.map(w=>`<div class="reason">• ${w}</div>`).join(''):'<p class="muted">No warning signs.</p>'}
- ${tp?`<h3 style="margin-top:10px">Weak topic (from test answers)</h3><div class="topics"><span>${tp}</span></div>`:''}
- <h3 style="margin-top:10px">Suggested teacher action</h3><ol>${plan.map(p=>`<li>${p}</li>`).join('')}</ol>
- ${msg?`<h3 style="margin-top:10px">Parent message (WhatsApp, Hindi) <span class="muted">draft, teacher approves before sending</span></h3><div class="msg">${msg}</div><div class="tools" style="margin-top:8px"><button class="p" onclick="this.textContent='Approved ✓ (demo: sent via WhatsApp API in pilot)'">Approve &amp; send</button></div>`:''}`}
-$('tb').onclick=e=>{const r=e.target.closest('tr.row');if(r)show(+r.dataset.i)};
+ $('tb').innerHTML=S.map((s,i)=>{const[k,l]=lvl(s.r);return `<tr class="row" tabindex="0" data-i="${i}"><td class="hide-sm">${esc(s.roll)}</td><td>${esc(s.name)}</td><td><span class="bar"><i style="width:${s.a*100}%;background:${s.a<.75?'var(--red)':'var(--grn)'}"></i></span>${Math.round(s.a*100)}%</td><td>${Math.round(s.marks[s.marks.length-1])}%</td><td><span class="pill ${k}">${l} · ${s.r}</span></td></tr>`}).join('');show(0)}
+function spark(v,label,col){const w=200,h=50,n=v.length;const x=i=>10+i*(w-20)/Math.max(1,n-1),y=q=>h-8-(q/100)*(h-18);return `<svg width="${w}" height="${h+12}" role="img" aria-label="${esc(label)}: ${v.map(Math.round).join(', ')}"><polyline fill="none" stroke="${col}" stroke-width="2" points="${v.map((q,i)=>x(i)+','+y(q)).join(' ')}"/>${v.map((q,i)=>`<circle cx="${x(i)}" cy="${y(q)}" r="2.5" fill="${col}"/>`).join('')}<text x="0" y="${h+10}">${label}</text></svg>`}
+const FL={att:['Attendance (all weeks)',(f)=>Math.round(f.att*100)+'%'],adrop:['Attendance drop (last 2 weeks)',(f)=>f.adrop>0?'−'+Math.round(f.adrop*100)+' pts':'no drop'],marks:['Latest test marks',(f)=>Math.round(f.marks)+'%'],
+ mdrop:['Marks change (first → latest week)',(f,s)=>Math.round(s.marks[0])+' → '+Math.round(s.marks[s.marks.length-1])],hw:['Homework submitted',(f)=>Math.round(f.hw*100)+'%'],fee:['Fee pending',(f)=>f.fee+' days']};
+function contrib(s){const mx=Math.max(1,...s.c.map(Math.abs));return M.names.map((n,i)=>{const v=s.c[i],up=v>0,w=Math.abs(v)/mx*50;
+ return `<div class="cf"><span>${FL[n][0]}: <b>${esc(FL[n][1](s.f,s))}</b></span><span class="ctrack" role="img" aria-label="${up?'raises':'lowers'} risk by ${Math.abs(v).toFixed(2)}"><i class="${up?'up':'dn'}" style="width:${w.toFixed(1)}%"></i></span><span class="cv ${up?'up':'dn'}">${up?'+':'−'}${Math.abs(v).toFixed(1)}</span></div>`}).join('')}
+function show(i,scroll){const s=S[i];if(!s)return;CUR=i;document.querySelectorAll('tr.row').forEach(r=>r.classList.toggle('sel',+r.dataset.i===i));const[k,l]=lvl(s.r);const fn=s.name.split(' ')[0];const tp=s.topic,sub=tp.split(':')[0],tn=tp.split(':').pop().trim();const recent=Math.round(mean(s.att.slice(-2)));const cls=$('cls').value;
+ const plan=s.r>=30?[`Talk to ${fn} this week (5 min, friendly, ask about absence)`,tp?`Give the 15-min practice sheet on "${tn}" (${sub})`:`Pair ${fn} with a study buddy for homework`,"Call parent if attendance doesn't improve by Friday","Re-check next week"]:s.r>=15?[tp?`Short revision of "${tn}" in class`:'Encourage homework submission','Monitor for 2 weeks']:['No action needed. Keep encouraging.'];
+ const msg=s.r<15?'':LANG==='hi'?`नमस्ते, मैं ${fn} की क्लास टीचर हूँ (कक्षा ${cls})।\n${fn} पिछले 2 हफ़्तों में ${recent}% दिन स्कूल आया/आई है${tp?` और ${sub} में "${tn}" में थोड़ी मदद चाहिए`:''}।\nकृपया रोज़ स्कूल भेजें। कोई परेशानी हो तो बताइए, हम मदद करेंगे। 🙏`
+  :`Namaste, I am ${fn}'s class teacher (Class ${cls}).\n${fn} came to school on ${recent}% of days in the last 2 weeks${tp?` and needs a little help with "${tn}" in ${sub}`:''}.\nPlease send ${fn} to school every day. If there is any difficulty, please tell us and we will help. 🙏`;
+ $('det').innerHTML=`<div class="phead">ShikshaPulse student report · Class ${esc(cls)} · Week ${esc(s.wk)} · Roll ${esc(s.roll)} · Printed ${esc(new Date().toLocaleDateString('en-IN'))}</div>
+ <div class="dhead"><h3>${esc(s.name)} <span class="pill ${k}">${l} risk · ${s.r}/100</span></h3><button class="noprint" id="prt">Print report</button></div><div style="display:flex;gap:14px;flex-wrap:wrap">${spark(s.att,'Attendance % (weekly)','#0f766e')}${spark(s.marks,'Test marks (weekly)','#d97706')}</div>
+ <h3 style="margin-top:8px">Why flagged (top model reasons)</h3>${s.why.length?s.why.map(w=>`<div class="reason">• ${esc(w)}</div>`).join(''):'<p class="muted">No warning signs.</p>'}
+ <h3 style="margin-top:12px">How each factor moves the score</h3>${contrib(s)}<p class="muted" style="margin:6px 0 0">Red pushes risk up, green pulls it down, compared with an average student in the training data (model weight × standardised value, in log-odds).</p>
+ ${tp?`<h3 style="margin-top:10px">Weak topic (from test answers)</h3><div class="topics"><span>${esc(tp)}</span></div>`:''}
+ <h3 style="margin-top:10px">Suggested teacher action</h3><ol>${plan.map(p=>`<li>${esc(p)}</li>`).join('')}</ol>
+ ${msg?`<h3 style="margin-top:10px">Parent message (WhatsApp, ${LANG==='hi'?'Hindi':'English'}) <span class="muted">draft, teacher approves before sending</span></h3><div class="seg noprint" role="group" aria-label="Message language" style="margin-bottom:8px"><button data-l="hi" lang="hi" aria-pressed="${LANG==='hi'}">हिन्दी</button><button data-l="en" aria-pressed="${LANG==='en'}">English</button></div><div class="msg" lang="${LANG}"></div><div class="tools noprint" style="margin-top:8px"><button class="p" id="appr">Approve &amp; send</button></div>`:''}`;
+ if(msg){$('det').querySelector('.msg').textContent=msg;$('appr').onclick=function(){this.textContent='Approved ✓ (demo: sent via WhatsApp API in pilot)'};$('det').querySelectorAll('.seg button').forEach(b=>b.onclick=()=>{LANG=b.dataset.l;show(CUR)})}
+ $('prt').onclick=()=>window.print();
+ if(scroll&&matchMedia('(max-width:760px)').matches)$('det').scrollIntoView({behavior:'smooth',block:'start'})}
+const pick=e=>{const r=e.target.closest('tr.row');if(r)show(+r.dataset.i,true)};
+$('tb').onclick=pick;$('tb').onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();pick(e)}};
+// ---------- principal view ----------
+function principal(){const rows=classes().map(c=>{const st=scoreClass(c);return{c,st,n:st.length,hi:st.filter(s=>s.r>=30).length,w:st.filter(s=>s.r>=15&&s.r<30).length,att:mean(st.map(s=>s.a))}});
+ const every=rows.flatMap(r=>r.st);$('pCls').textContent=rows.length;$('pTot').textContent=every.length;$('pRed').textContent=every.filter(s=>s.r>=30).length;$('pAtt').textContent=Math.round(mean(every.map(s=>s.a))*100)+'%';
+ $('ptb').innerHTML=rows.map(r=>`<tr class="row" tabindex="0" data-c="${esc(r.c)}"><td><b>${esc(r.c)}</b></td><td>${r.n}</td><td style="color:var(--red);font-weight:600">${r.hi}</td><td style="color:var(--amb);font-weight:600">${r.w}</td><td><span class="bar"><i style="width:${r.att*100}%;background:${r.att<.75?'var(--red)':'var(--grn)'}"></i></span>${Math.round(r.att*100)}%</td></tr>`).join('');
+ const lw=70,bw=360,rh=30,mx=Math.max(1,...rows.map(r=>r.n)),W=lw+bw+120,H=rows.length*rh+6;
+ $('pchart').innerHTML=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="High-risk students per class">${rows.map((r,i)=>{const y=i*rh+4,t=bw*r.n/mx,f=bw*r.hi/mx;
+  return `<text class="lb" x="${lw-8}" y="${y+15}" text-anchor="end">${esc(r.c)}</text><rect x="${lw}" y="${y+3}" width="${t.toFixed(1)}" height="16" rx="3" style="fill:var(--line)"/><rect x="${lw}" y="${y+3}" width="${f.toFixed(1)}" height="16" rx="3" style="fill:var(--red)"/><text x="${(lw+t+6).toFixed(1)}" y="${y+15}">${r.hi} high of ${r.n}</text>`}).join('')}</svg>`}
+const openClass=e=>{const r=e.target.closest('tr.row');if(!r)return;$('cls').value=r.dataset.c;build();setView('C')};
+$('ptb').onclick=openClass;$('ptb').onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openClass(e)}};
+function setView(v){VIEW=v;$('viewC').hidden=v!=='C';$('viewP').hidden=v!=='P';$('tabC').setAttribute('aria-selected',v==='C');$('tabP').setAttribute('aria-selected',v==='P');$('selw').hidden=v!=='C';
+ $('dlRisk').textContent='Download at-risk list ('+(v==='C'?$('cls').value:'all classes')+')';if(v==='P')principal()}
+$('tabC').onclick=()=>setView('C');$('tabP').onclick=()=>setView('P');
+// ---------- export ----------
+$('dlRisk').onclick=()=>{const cl=VIEW==='C'?[$('cls').value]:classes();const list=cl.flatMap(scoreClass).filter(s=>s.r>=15).sort((a,b)=>b.r-a.r);
+ if(!list.length){$('src').textContent='No High or Watch students to download.';setTimeout(()=>$('src').textContent=SRCTXT,3000);return}
+ const cell=v=>{let s=String(v==null?'':v);if(/^[=+\-@\t\r]/.test(s))s="'"+s;return /[",\r\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s};
+ const head=['student_id','name','class','week','risk_score','risk_level','attendance_pct_avg','latest_test_marks','homework_pct_avg','fee_pending_days','top_reasons','weak_topic'];
+ const csv='﻿'+[head,...list.map(s=>[s.roll,s.name,s.cls,s.wk,s.r,lvl(s.r)[1],Math.round(s.a*100),Math.round(s.f.marks),Math.round(s.f.hw*100),s.fee,s.why.join('; '),s.topic])].map(r=>r.map(cell).join(',')).join('\r\n')+'\r\n';
+ const tag=(VIEW==='C'?cl[0]:'all-classes').replace(/[^\w-]+/g,'_');save(csv,`shikshapulse_at_risk_${tag}.csv`)};
 </script></body></html>
