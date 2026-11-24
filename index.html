@@ -1,0 +1,189 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>ShikshaPulse MVP</title>
+<style>
+:root{--bg:#f5f7f7;--card:#fff;--ink:#17252b;--muted:#5f6d72;--line:#e1e7e8;--brand:#0f766e;--red:#dc2626;--amb:#d97706;--grn:#16a34a;--soft:#eef6f5}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e1719;--card:#152225;--ink:#e6eef0;--muted:#97a6aa;--line:#23353a;--soft:#183034}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.5 system-ui,"Segoe UI",Roboto,sans-serif}
+header{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 20px;background:var(--card);border-bottom:1px solid var(--line);flex-wrap:wrap}
+.logo{font-weight:700;font-size:17px;color:var(--brand)}.logo small{color:var(--muted);font-weight:400;font-size:12px;margin-left:6px}
+select,button,input{font:inherit;padding:6px 10px;border:1px solid var(--line);border-radius:6px;background:var(--card);color:var(--ink)}
+button{cursor:pointer}button.p{background:var(--brand);color:#fff;border-color:var(--brand)}
+.wrap{max-width:1180px;margin:0 auto;padding:16px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:14px}
+@media(max-width:760px){.stats{grid-template-columns:repeat(2,1fr)}.grid{grid-template-columns:1fr!important}}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:10px 14px}.stat b{font-size:24px;display:block}.stat span{color:var(--muted);font-size:12.5px}
+.grid{display:grid;grid-template-columns:1.1fr 1fr;gap:14px}.card{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:14px;overflow-x:auto}
+h3{margin:0 0 10px;font-size:14.5px}table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;padding:7px 6px;border-bottom:1px solid var(--line)}th{color:var(--muted);font-size:12px}
+tr.row{cursor:pointer}tr.row:hover,tr.sel{background:var(--soft)}
+.pill{display:inline-block;padding:1px 8px;border-radius:10px;font-size:12px;font-weight:600;color:#fff}.r{background:var(--red)}.a{background:var(--amb)}.g{background:var(--grn)}
+.bar{height:6px;background:var(--line);border-radius:3px;overflow:hidden;width:60px;display:inline-block;vertical-align:middle;margin-right:6px}.bar i{display:block;height:100%}
+.reason{padding:6px 0;border-bottom:1px solid var(--line)}.topics span{display:inline-block;background:var(--soft);border:1px solid var(--line);border-radius:5px;padding:2px 8px;font-size:12.5px}
+.msg{background:#dcf8c6;color:#111;border-radius:8px;padding:10px;font-size:13px;white-space:pre-wrap}
+ol{margin:4px 0;padding-left:18px}.muted{color:var(--muted);font-size:12.5px}svg text{fill:var(--muted);font-size:10px}
+.bx{max-width:340px;margin:12vh auto;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:22px}.bx input{width:100%;margin:6px 0 12px}
+.tools{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
+</style></head><body>
+<div id="login"><div class="bx"><div class="logo">ShikshaPulse</div><p class="muted">Teacher login (demo)</p>
+<input id="u" value="teacher@demo-school.in" aria-label="Email"><input id="pw" type="password" value="demo123" aria-label="Password">
+<button class="p" id="go" style="width:100%">Login</button><p class="muted" id="err"></p></div></div>
+<div id="app" hidden>
+<header><div class="logo">ShikshaPulse<small>MVP v1.0 · Demo School ERP import</small></div><div><select id="cls"></select> <select id="wk"></select> <button id="out">Logout</button></div></header>
+<div class="wrap">
+<div class="tools"><label class="p" style="background:var(--brand);color:#fff;padding:6px 12px;border-radius:6px;cursor:pointer">Upload ERP Excel/CSV<input id="f" type="file" accept=".csv" hidden></label>
+<button id="dl">Download sample CSV</button><span class="muted" id="src"></span></div>
+<div class="stats"><div class="stat"><b id="sTot">0</b><span>Students</span></div><div class="stat"><b id="sRed" style="color:var(--red)">0</b><span>High risk this week</span></div><div class="stat"><b id="sAmb" style="color:var(--amb)">0</b><span>Watch list</span></div><div class="stat"><b id="sAtt">0%</b><span>Class attendance (last 4 weeks)</span></div></div>
+<div class="grid"><div class="card"><h3>Students sorted by risk</h3><table><thead><tr><th>Roll</th><th>Name</th><th>Attendance</th><th>Marks</th><th>Risk</th></tr></thead><tbody id="tb"></tbody></table></div><div class="card" id="det"></div></div>
+<p class="muted">Model: logistic regression trained on 6,000 synthetic students (AUC 0.747, top-10% list catches 28% of at-risk students). Real accuracy will be measured on anonymised school data in the pilot. CSV columns: student_id, name, class, week, attendance_pct, test_marks, homework_pct, fee_pending_days, weak_topic (optional). Data is processed in your browser and not uploaded anywhere.</p>
+</div></div>
+<script>
+const M={"names": ["att", "adrop", "marks", "mdrop", "hw", "fee"], "mu": [0.8154059807303586, 0.050386523728978894, 62.22606151995279, 2.227992483970034, 0.6933263423700133, 8.090166666666667], "sd": [0.11326625942856718, 0.04975124784277838, 16.749532224362518, 6.979571376164204, 0.20524167022515222, 20.691263131386002], "coef": [-0.4883307917443954, 0.4097586318991022, -0.51023792291784, 0.38650691718945485, -0.376591763738117, 0.18423788222076412], "b": -2.6414239647754747};const SAMPLE=`student_id,name,class,week,attendance_pct,test_marks,homework_pct,fee_pending_days,weak_topic
+S001,Aarav Sharma,8-A,11,75,51,63,0,Maths: Fractions
+S001,Aarav Sharma,8-A,12,75,53,62,0,Science: Force & pressure
+S001,Aarav Sharma,8-A,13,75,55,77,0,Maths: Fractions
+S001,Aarav Sharma,8-A,14,75,53,82,0,Maths: Mensuration
+S002,Ananya Verma,8-A,11,91,52,85,0,Maths: Mensuration
+S002,Ananya Verma,8-A,12,91,50,76,0,Science: Force & pressure
+S002,Ananya Verma,8-A,13,91,53,94,0,Science: Sound
+S002,Ananya Verma,8-A,14,91,51,82,0,Science: Sound
+S003,Rohan Patel,8-A,11,83,78,83,0,Science: Force & pressure
+S003,Rohan Patel,8-A,12,83,76,82,0,Maths: Fractions
+S003,Rohan Patel,8-A,13,83,75,85,0,Maths: Exponents
+S003,Rohan Patel,8-A,14,83,75,77,0,English: Tenses
+S004,Priya Yadav,8-A,11,80,87,34,0,Science: Force & pressure
+S004,Priya Yadav,8-A,12,80,80,52,0,Science: Force & pressure
+S004,Priya Yadav,8-A,13,50,73,23,0,Science: Sound
+S004,Priya Yadav,8-A,14,50,66,41,0,English: Tenses
+S005,Kunal Joshi,8-A,11,88,55,65,45,Hindi: Sandhi
+S005,Kunal Joshi,8-A,12,88,60,74,45,Maths: Exponents
+S005,Kunal Joshi,8-A,13,88,58,98,45,Maths: Fractions
+S005,Kunal Joshi,8-A,14,88,56,83,45,English: Tenses
+S006,Sneha Malviya,8-A,11,76,61,40,0,Maths: Exponents
+S006,Sneha Malviya,8-A,12,76,54,23,0,Maths: Fractions
+S006,Sneha Malviya,8-A,13,46,47,58,0,Maths: Exponents
+S006,Sneha Malviya,8-A,14,46,40,48,0,Maths: Fractions
+S007,Vikas Rathore,8-A,11,67,76,100,0,Maths: Exponents
+S007,Vikas Rathore,8-A,12,67,78,75,0,English: Tenses
+S007,Vikas Rathore,8-A,13,67,79,78,0,Maths: Linear equations
+S007,Vikas Rathore,8-A,14,67,76,80,0,Science: Force & pressure
+S008,Pooja Chouhan,8-A,11,90,52,76,0,Maths: Exponents
+S008,Pooja Chouhan,8-A,12,90,53,78,0,Science: Sound
+S008,Pooja Chouhan,8-A,13,90,49,93,0,Science: Sound
+S008,Pooja Chouhan,8-A,14,90,50,99,0,Hindi: Sandhi
+S009,Arjun Jain,8-A,11,96,54,69,0,Science: Force & pressure
+S009,Arjun Jain,8-A,12,96,55,93,0,Maths: Linear equations
+S009,Arjun Jain,8-A,13,96,53,60,0,Hindi: Sandhi
+S009,Arjun Jain,8-A,14,96,52,84,0,English: Tenses
+S010,Neha Mishra,8-A,11,95,76,85,0,Maths: Mensuration
+S010,Neha Mishra,8-A,12,95,76,95,0,Hindi: Sandhi
+S010,Neha Mishra,8-A,13,95,77,76,0,Maths: Exponents
+S010,Neha Mishra,8-A,14,95,75,62,0,Maths: Fractions
+S011,Rahul Sharma,8-A,11,97,79,35,0,Maths: Mensuration
+S011,Rahul Sharma,8-A,12,97,78,35,0,Maths: Mensuration
+S011,Rahul Sharma,8-A,13,49,67,35,0,Maths: Mensuration
+S011,Rahul Sharma,8-A,14,49,56,35,0,Maths: Mensuration
+S012,Kavya Verma,8-A,11,82,87,63,0,Science: Force & pressure
+S012,Kavya Verma,8-A,12,82,87,66,0,Science: Sound
+S012,Kavya Verma,8-A,13,82,85,84,0,Maths: Exponents
+S012,Kavya Verma,8-A,14,82,90,94,0,Maths: Exponents
+S013,Aditya Patel,8-A,11,80,61,90,0,Science: Sound
+S013,Aditya Patel,8-A,12,80,59,88,0,Maths: Mensuration
+S013,Aditya Patel,8-A,13,80,61,98,0,English: Tenses
+S013,Aditya Patel,8-A,14,80,61,82,0,Maths: Mensuration
+S014,Riya Yadav,8-A,11,89,58,64,45,Science: Sound
+S014,Riya Yadav,8-A,12,89,58,96,45,English: Tenses
+S014,Riya Yadav,8-A,13,89,57,81,45,English: Tenses
+S014,Riya Yadav,8-A,14,89,58,85,45,Science: Force & pressure
+S015,Sahil Joshi,8-A,11,91,80,69,0,Maths: Exponents
+S015,Sahil Joshi,8-A,12,91,83,61,0,Maths: Mensuration
+S015,Sahil Joshi,8-A,13,91,80,79,0,Science: Force & pressure
+S015,Sahil Joshi,8-A,14,91,81,98,0,Maths: Exponents
+S016,Isha Malviya,8-A,11,91,78,99,0,Maths: Fractions
+S016,Isha Malviya,8-A,12,91,79,69,0,Science: Force & pressure
+S016,Isha Malviya,8-A,13,91,79,79,0,Maths: Mensuration
+S016,Isha Malviya,8-A,14,91,78,86,0,Maths: Fractions
+S017,Manish Rathore,8-A,11,92,50,36,0,Science: Force & pressure
+S017,Manish Rathore,8-A,12,92,43,39,0,Maths: Linear equations
+S017,Manish Rathore,8-A,13,62,36,37,0,English: Tenses
+S017,Manish Rathore,8-A,14,62,29,23,0,Hindi: Sandhi
+S018,Tanvi Chouhan,8-A,11,80,78,23,0,Maths: Linear equations
+S018,Tanvi Chouhan,8-A,12,80,71,27,0,Maths: Linear equations
+S018,Tanvi Chouhan,8-A,13,50,64,21,0,Maths: Exponents
+S018,Tanvi Chouhan,8-A,14,50,57,52,0,Maths: Linear equations
+S019,Yash Jain,8-A,11,85,72,97,0,Maths: Linear equations
+S019,Yash Jain,8-A,12,85,72,65,0,Maths: Mensuration
+S019,Yash Jain,8-A,13,85,70,89,0,Maths: Fractions
+S019,Yash Jain,8-A,14,85,72,97,0,Hindi: Sandhi
+S020,Simran Mishra,8-A,11,97,52,61,0,Science: Force & pressure
+S020,Simran Mishra,8-A,12,97,55,70,0,English: Tenses
+S020,Simran Mishra,8-A,13,97,55,77,0,Maths: Linear equations
+S020,Simran Mishra,8-A,14,97,56,90,0,Maths: Exponents
+S021,Deepak Sharma,8-A,11,86,82,93,0,Maths: Linear equations
+S021,Deepak Sharma,8-A,12,86,81,81,0,Maths: Mensuration
+S021,Deepak Sharma,8-A,13,86,79,91,0,Maths: Mensuration
+S021,Deepak Sharma,8-A,14,86,80,66,0,Maths: Linear equations
+S022,Muskan Verma,8-A,11,80,77,73,0,Maths: Exponents
+S022,Muskan Verma,8-A,12,80,76,64,0,Maths: Mensuration
+S022,Muskan Verma,8-A,13,80,79,71,0,Maths: Fractions
+S022,Muskan Verma,8-A,14,80,78,82,0,Maths: Fractions
+S023,Harsh Patel,8-A,11,79,73,80,45,Science: Sound
+S023,Harsh Patel,8-A,12,79,73,81,45,Maths: Exponents
+S023,Harsh Patel,8-A,13,79,73,70,45,Science: Sound
+S023,Harsh Patel,8-A,14,79,70,96,45,Science: Force & pressure
+S024,Nikita Yadav,8-A,11,92,53,78,0,Maths: Fractions
+S024,Nikita Yadav,8-A,12,92,50,77,0,Science: Force & pressure
+S024,Nikita Yadav,8-A,13,92,50,91,0,Maths: Linear equations
+S024,Nikita Yadav,8-A,14,92,49,86,0,English: Tenses
+S025,Gaurav Joshi,8-A,11,70,85,59,0,Science: Force & pressure
+S025,Gaurav Joshi,8-A,12,70,78,50,0,Maths: Fractions
+S025,Gaurav Joshi,8-A,13,40,71,36,0,Maths: Exponents
+S025,Gaurav Joshi,8-A,14,40,64,27,0,Science: Force & pressure
+S026,Khushi Malviya,8-A,11,70,64,74,0,Science: Force & pressure
+S026,Khushi Malviya,8-A,12,70,65,64,0,English: Tenses
+S026,Khushi Malviya,8-A,13,70,67,82,0,Maths: Exponents
+S026,Khushi Malviya,8-A,14,70,63,75,0,Science: Sound
+S027,Abhay Rathore,8-A,11,81,45,92,0,Maths: Fractions
+S027,Abhay Rathore,8-A,12,81,50,71,0,Maths: Linear equations
+S027,Abhay Rathore,8-A,13,81,49,65,0,Hindi: Sandhi
+S027,Abhay Rathore,8-A,14,81,46,87,0,Science: Sound
+S028,Divya Chouhan,8-A,11,78,69,41,0,Maths: Exponents
+S028,Divya Chouhan,8-A,12,78,62,48,0,Maths: Fractions
+S028,Divya Chouhan,8-A,13,48,55,31,0,Maths: Linear equations
+S028,Divya Chouhan,8-A,14,48,48,37,0,Maths: Fractions
+S029,Ritesh Jain,8-A,11,74,48,70,0,Science: Force & pressure
+S029,Ritesh Jain,8-A,12,74,48,95,0,Maths: Exponents
+S029,Ritesh Jain,8-A,13,74,49,100,0,Hindi: Sandhi
+S029,Ritesh Jain,8-A,14,74,43,71,0,Maths: Linear equations
+S030,Sakshi Mishra,8-A,11,66,74,99,0,Science: Sound
+S030,Sakshi Mishra,8-A,12,66,80,68,0,Science: Sound
+S030,Sakshi Mishra,8-A,13,66,76,81,0,Science: Force & pressure
+S030,Sakshi Mishra,8-A,14,66,78,80,0,Maths: Linear equations`;
+const $=id=>document.getElementById(id);let S=[],ALL=[];
+$('go').onclick=()=>{if($('u').value.trim()&&$('pw').value==='demo123'){$('login').hidden=true;$('app').hidden=false;load(SAMPLE,'Sample data (30 students)')}else $('err').textContent='Wrong password (demo: demo123)'};
+$('out').onclick=()=>{$('app').hidden=true;$('login').hidden=false};
+$('dl').onclick=()=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([SAMPLE],{type:'text/csv'}));a.download='sample_students.csv';a.click()};
+$('f').onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{load(r.result,f.name)}catch(x){alert('Could not read file: '+x.message)}};r.readAsText(f)};
+function parse(t){const L=t.replace(/^\uFEFF/,'').trim().split(/\r?\n/);const h=L[0].split(',').map(x=>x.trim().toLowerCase());return L.slice(1).filter(x=>x.trim()).map(l=>{const c=l.split(',');const o={};h.forEach((k,i)=>o[k]=(c[i]||'').trim());return o})}
+const mean=a=>a.reduce((x,y)=>x+y,0)/a.length;
+function score(s){const a=s.att,m=s.marks;const f={att:mean(a)/100,adrop:Math.max(0,(mean(a.slice(0,Math.ceil(a.length/2)))-mean(a.slice(-2)))/100),marks:m[m.length-1],mdrop:m[0]-m[m.length-1],hw:mean(s.hw)/100,fee:s.fee};
+ const c=M.names.map((n,i)=>M.coef[i]*(f[n]-M.mu[i])/M.sd[i]);const z=M.b+c.reduce((x,y)=>x+y,0);const p=1/(1+Math.exp(-z));
+ const txt={att:()=>`Attendance ${Math.round(f.att*100)}% in recent weeks${f.att<.75?' (below 75%)':''}`,adrop:()=>`Attendance fell from ${Math.round(mean(s.att.slice(0,Math.ceil(s.att.length/2))))}% to ${Math.round(mean(s.att.slice(-2)))}% in the last 2 weeks`,marks:()=>`Latest test marks ${Math.round(f.marks)}%`,mdrop:()=>`Test marks dropped ${Math.round(f.mdrop)} points (${Math.round(m[0])} → ${Math.round(m[m.length-1])})`,hw:()=>`Only ${Math.round(f.hw*100)}% homework submitted`,fee:()=>`Fee pending for ${f.fee} days (possible family difficulty)`};
+ const why=M.names.map((n,i)=>({n,v:c[i]})).filter(x=>x.v>0.15).sort((x,y)=>y.v-x.v).slice(0,3).map(x=>txt[x.n]());
+ return{r:Math.min(99,Math.round(p*100)),why,a:f.att}}
+const lvl=r=>r>=30?['r','High']:r>=15?['a','Watch']:['g','OK'];
+function load(t,name){ALL=parse(t);const need=['student_id','name','week','attendance_pct','test_marks','homework_pct'];const miss=need.filter(k=>!(k in ALL[0]));if(miss.length)throw new Error('missing columns: '+miss.join(', '));
+ const cl=[...new Set(ALL.map(r=>r.class||'All'))];$('cls').innerHTML=cl.map(c=>`<option>${c}</option>`).join('');$('cls').onchange=build;$('src').textContent='Loaded: '+name+' · '+ALL.length+' rows';build()}
+function build(){const c=$('cls').value;const g={};ALL.filter(r=>(r.class||'All')===c).forEach(r=>{(g[r.student_id]=g[r.student_id]||[]).push(r)});
+ S=Object.values(g).map(rs=>{rs.sort((a,b)=>+a.week-+b.week);const s={roll:rs[0].student_id,name:rs[0].name,att:rs.map(r=>+r.attendance_pct),marks:rs.map(r=>+r.test_marks),hw:rs.map(r=>+r.homework_pct),fee:+rs[rs.length-1].fee_pending_days||0,topic:rs[rs.length-1].weak_topic||'',wk:rs[rs.length-1].week};return Object.assign(s,score(s))}).sort((a,b)=>b.r-a.r);
+ $('wk').innerHTML=`<option>Week ${S[0]?S[0].wk:''}</option>`;
+ $('sTot').textContent=S.length;$('sRed').textContent=S.filter(s=>s.r>=30).length;$('sAmb').textContent=S.filter(s=>s.r>=15&&s.r<30).length;$('sAtt').textContent=Math.round(mean(S.map(s=>s.a))*100)+'%';
+ $('tb').innerHTML=S.map((s,i)=>{const[k,l]=lvl(s.r);return `<tr class="row" data-i="${i}"><td>${s.roll}</td><td>${s.name}</td><td><span class="bar"><i style="width:${s.a*100}%;background:${s.a<.75?'var(--red)':'var(--grn)'}"></i></span>${Math.round(s.a*100)}%</td><td>${Math.round(s.marks[s.marks.length-1])}%</td><td><span class="pill ${k}">${l} · ${s.r}</span></td></tr>`}).join('');show(0)}
+function spark(v,label,col){const w=200,h=50,n=v.length;const x=i=>10+i*(w-20)/Math.max(1,n-1),y=q=>h-8-(q/100)*(h-18);return `<svg width="${w}" height="${h+12}"><polyline fill="none" stroke="${col}" stroke-width="2" points="${v.map((q,i)=>x(i)+','+y(q)).join(' ')}"/>${v.map((q,i)=>`<circle cx="${x(i)}" cy="${y(q)}" r="2.5" fill="${col}"/>`).join('')}<text x="0" y="${h+10}">${label}</text></svg>`}
+function show(i){const s=S[i];if(!s)return;document.querySelectorAll('tr.row').forEach(r=>r.classList.toggle('sel',+r.dataset.i===i));const[k,l]=lvl(s.r);const fn=s.name.split(' ')[0];const tp=s.topic,sub=tp.split(':')[0];const recent=Math.round(mean(s.att.slice(-2)));
+ const plan=s.r>=30?[`Talk to ${fn} this week (5 min, friendly, ask about absence)`,tp?`Give the 15-min practice sheet on "${tp.split(':').pop().trim()}" (${sub})`:`Pair ${fn} with a study buddy for homework`,"Call parent if attendance doesn't improve by Friday","Re-check next week"]:s.r>=15?[tp?`Short revision of "${tp.split(':').pop().trim()}" in class`:'Encourage homework submission','Monitor for 2 weeks']:['No action needed. Keep encouraging.'];
+ const msg=s.r>=15?`नमस्ते, मैं ${fn} की क्लास टीचर हूँ (कक्षा ${$('cls').value})।\n${fn} पिछले 2 हफ़्तों में ${recent}% दिन स्कूल आया/आई है${tp?` और ${sub} में "${tp.split(':').pop().trim()}" में थोड़ी मदद चाहिए`:''}।\nकृपया रोज़ स्कूल भेजें। कोई परेशानी हो तो बताइए, हम मदद करेंगे। 🙏`:'';
+ $('det').innerHTML=`<h3>${s.name} <span class="pill ${k}">${l} risk · ${s.r}/100</span></h3><div style="display:flex;gap:14px;flex-wrap:wrap">${spark(s.att,'Attendance % (weekly)','#0f766e')}${spark(s.marks,'Test marks (weekly)','#d97706')}</div>
+ <h3 style="margin-top:8px">Why flagged (top model reasons)</h3>${s.why.length?s.why.map(w=>`<div class="reason">• ${w}</div>`).join(''):'<p class="muted">No warning signs.</p>'}
+ ${tp?`<h3 style="margin-top:10px">Weak topic (from test answers)</h3><div class="topics"><span>${tp}</span></div>`:''}
+ <h3 style="margin-top:10px">Suggested teacher action</h3><ol>${plan.map(p=>`<li>${p}</li>`).join('')}</ol>
+ ${msg?`<h3 style="margin-top:10px">Parent message (WhatsApp, Hindi) <span class="muted">draft, teacher approves before sending</span></h3><div class="msg">${msg}</div><div class="tools" style="margin-top:8px"><button class="p" onclick="this.textContent='Approved ✓ (demo: sent via WhatsApp API in pilot)'">Approve &amp; send</button></div>`:''}`}
+$('tb').onclick=e=>{const r=e.target.closest('tr.row');if(r)show(+r.dataset.i)};
+</script></body></html>
